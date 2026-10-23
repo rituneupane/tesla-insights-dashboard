@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Tesla · Scale, Mix &amp; Margin, 10-Year View · Ritu Neupane</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<script src="data.js"></script>
+<style>
+:root{--red:#E31937;--ink:#171A20;--g1:#5C5E62;--g2:#A2A3A5;--g3:#D0D1D2;--bg:#F4F4F4;--card:#FFFFFF;--line:#E6E6E6}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;font-family:"Inter","Segoe UI","Helvetica Neue",Arial,sans-serif;background:var(--bg);color:var(--ink);overflow-x:hidden}
+header{background:#fff;border-bottom:2px solid var(--red)}
+.hd,.wrap,footer{max-width:1160px;margin:0 auto;padding-left:24px;padding-right:24px}
+.hd{padding-top:24px;padding-bottom:18px;display:flex;justify-content:space-between;align-items:flex-end;gap:12px 24px;flex-wrap:wrap}
+.hd>div:first-child{min-width:0;flex:1 1 520px}
+.eyebrow{color:var(--red);font-size:11px;letter-spacing:.3em;font-weight:700;text-transform:uppercase}
+h1{margin:6px 0 6px;font-size:clamp(22px,3.2vw,30px);line-height:1.2}
+.sub{margin:0;color:var(--g1);font-size:13.5px;max-width:620px;line-height:1.5}
+.by{font-size:12px;color:var(--g1);white-space:nowrap}
+.wrap{padding-top:18px;padding-bottom:12px}
+.tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}
+.tabs button{border:1px solid var(--line);background:#fff;border-radius:999px;padding:9px 18px;font-size:13px;cursor:pointer;color:var(--ink);font-family:inherit}
+.tabs button.on{background:var(--red);border-color:var(--red);color:#fff}
+.grid{display:grid;gap:16px;margin-bottom:16px}
+.kpis{grid-template-columns:repeat(4,minmax(0,1fr))}
+.row{grid-template-columns:repeat(2,minmax(0,1fr))}
+.row3{grid-template-columns:repeat(3,minmax(0,1fr))}
+.card{background:var(--card);border-radius:14px;padding:18px 20px;box-shadow:0 1px 3px rgba(0,0,0,.06);min-width:0}
+.wrap>section>.card{margin-bottom:16px}
+.kpi .l{font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--g1);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.kpi .v{font-size:clamp(20px,2.4vw,26px);font-weight:700;color:var(--red);margin:6px 0 2px;white-space:nowrap}
+.kpi .s{font-size:12px;color:var(--g1)}
+h2{font-size:16px;margin:0 0 4px}.note{font-size:12.5px;color:var(--g1);margin:0 0 12px;line-height:1.45}
+.take h3{color:var(--red);font-size:14px;margin:0 0 6px}.take p{font-size:13px;line-height:1.55;margin:0}
+.cv{position:relative;width:100%;height:340px}.cv.md{height:300px}.cv.sm{height:240px}
+.cv canvas{position:absolute;inset:0;width:100%!important;height:100%!important}
+.tbl{width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch}
+table{width:100%;border-collapse:collapse;font-size:13px}th,td{text-align:left;padding:8px 6px;border-bottom:1px solid var(--line)}th{font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:var(--g1);white-space:nowrap}
+td.num,th.num{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+.pass{color:#1E7B34;font-weight:600}.fail{color:var(--red);font-weight:700}
+section{display:none}section.on{display:block}
+footer{padding-top:4px;padding-bottom:28px;font-size:11.5px;color:var(--g1);line-height:1.5}
+footer a{color:var(--g1)}
+@media(max-width:900px){.row3{grid-template-columns:1fr}.kpis{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:700px){.row{grid-template-columns:1fr}.cv{height:280px}.cv.md{height:260px}.cv.sm{height:260px}}
+@media(max-width:480px){.hd,.wrap,footer{padding-left:16px;padding-right:16px}.grid{gap:12px}.card{padding:14px 14px}.kpi .v{font-size:20px}.by{white-space:normal}.tabs{gap:6px}.tabs button{padding:8px 12px;font-size:12.5px}table{font-size:11.5px}th,td{padding:7px 3px}th{letter-spacing:.02em;font-size:10px}.card.tc{padding:12px 10px}.tc table{font-size:11px}.tc th,.tc td{padding:7px 2px}}
+</style>
+</head>
+<body>
+<header><div class="hd">
+  <div><div class="eyebrow">Tesla · Insights</div><h1>Scale, Mix &amp; Margin, 10-Year View</h1>
+  <p class="sub">Independent strategy brief: how Model 3 vertical integration became Model Y volume, then a trade-off between price and margin. Data 2016 to 2025 from Tesla deliveries and 10-K filings.</p></div>
+  <div class="by">Analyst: Ritu Neupane</div>
+</div></header>
+<div class="wrap">
+  <div class="tabs" id="tabs">
+    <button data-t="overview" class="on">Overview</button><button data-t="volume">Volume</button><button data-t="profitability">Profitability</button><button data-t="checks">Checks</button>
+  </div>
+
+  <section id="tab-overview" class="on">
+    <div class="grid kpis" id="kpis"></div>
+    <div class="card" style="margin-bottom:16px"><h2>Annual deliveries (thousands)</h2><p class="note">Red = Model 3/Y. Grey = S/X/Cybertruck and earlier models.</p><div class="cv"><canvas id="cDeliv"></canvas></div></div>
+    <div class="grid row">
+      <div class="card"><h2>2025 vehicle mix</h2><div class="cv sm"><canvas id="cMix"></canvas></div></div>
+      <div class="card"><h2>2025 revenue mix ($B)</h2><div class="cv sm"><canvas id="cRevMix"></canvas></div></div>
+    </div>
+    <div class="grid row3">
+      <div class="card take"><h3>The thesis</h3><p>Model 3 forced vertical integration. That capability scaled on Model Y. Volume is now a 3/Y story, not a luxury-car story.</p></div>
+      <div class="card take"><h3>What changed</h3><p id="tChanged"></p></div>
+      <div class="card take"><h3>Where growth is</h3><p id="tGrowth"></p></div>
+    </div>
+  </section>
+
+  <section id="tab-volume">
+    <div class="card"><h2>Quarterly deliveries 2023 to 2025 (thousands)</h2><p class="note">Q1 2025 dip aligns with the Model Y changeover across factories.</p><div class="cv"><canvas id="cQ"></canvas></div></div>
+    <div class="card tc"><div class="tbl"><table id="tVol"></table></div></div>
+  </section>
+
+  <section id="tab-profitability">
+    <div class="card"><h2>Margins (%)</h2><p class="note">Operating margin turns positive in 2020.</p><div class="cv md"><canvas id="cMargin"></canvas></div></div>
+    <div class="card"><h2>Revenue by segment ($ billions)</h2><p class="note">Automotive includes leasing and regulatory credits, as in the 10-K.</p><div class="cv md"><canvas id="cSeg"></canvas></div></div>
+  </section>
+
+  <section id="tab-checks">
+    <div class="card"><h2>Checks</h2><p class="note">Segments sum to total revenue, 3/Y + other = deliveries, and quarters sum to the year.</p><div id="ckSummary" style="font-size:14px;margin-bottom:10px"></div><div class="tbl"><table id="tChecks"></table></div></div>
+  </section>
+</div>
+<footer>Source: Tesla IR delivery releases and Form 10-K filings, 2016 to 2025; 2018 and 2019 Model 3/Y split estimated. · <a href="https://github.com/rituneupane/tesla-insights-dashboard">View code</a></footer>
+<script>
+const RED="#E31937", INK="#171A20", G1="#5C5E62", G2="#A2A3A5", G3="#D0D1D2";
+Chart.defaults.font.family='"Inter","Segoe UI","Helvetica Neue",Arial,sans-serif';Chart.defaults.color=G1;Chart.defaults.maintainAspectRatio=false;Chart.defaults.responsive=true;Chart.defaults.scale.ticks.maxRotation=0;Chart.defaults.scale.ticks.autoSkipPadding=6;
+const yrs=ANNUAL.map(r=>String(r.year)), last=ANNUAL[ANNUAL.length-1], prev=ANNUAL[ANNUAL.length-2];
+const peak=ANNUAL.reduce((a,b)=>b.deliveries>a.deliveries?b:a);
+const gmPeak=ANNUAL.reduce((a,b)=>b.auto_gross_margin_pct>a.auto_gross_margin_pct?b:a);
+const fmtM=v=>(v/1e6).toFixed(2)+"M";
+const share3y=last.model_3y_deliveries/last.deliveries*100;
+const e2020=ANNUAL.find(r=>r.year===2020).energy_revenue_b;
+document.getElementById("kpis").innerHTML=[
+ ["Peak deliveries",fmtM(peak.deliveries),peak.year+" record"],
+ [last.year+" deliveries",fmtM(last.deliveries),((last.deliveries/prev.deliveries-1)*100).toFixed(1)+"% vs "+prev.year],
+ ["3/Y share ("+last.year+")",share3y.toFixed(0)+"%","Mass-market mix"],
+ ["Auto gross margin",Math.round(gmPeak.auto_gross_margin_pct)+"% → "+Math.round(last.auto_gross_margin_pct)+"%","Peak "+gmPeak.year+" → "+last.year]
+].map(k=>`<div class="card kpi"><div class="l">${k[0]}</div><div class="v">${k[1]}</div><div class="s">${k[2]}</div></div>`).join("");
+document.getElementById("tChanged").textContent=`After the ${gmPeak.year} and 2022 peak in auto margins (~${Math.round(gmPeak.auto_gross_margin_pct)}%), Tesla cut prices to defend share. Auto gross margin was ${last.auto_gross_margin_pct.toFixed(1)}% in ${last.year}.`;
+document.getElementById("tGrowth").textContent=`Energy revenue rose from $${e2020.toFixed(1)}B (2020) to $${last.energy_revenue_b.toFixed(1)}B (${last.year}). It is the second growth engine while auto volume cooled.`;
+const grid={color:"#EEEEEE"};
+const legPos=()=>window.innerWidth<700?"bottom":"right";
+const donutOpts=()=>({cutout:"62%",layout:{padding:4},plugins:{legend:{position:legPos(),labels:{boxWidth:12,padding:12}}},onResize:(c)=>{const p=legPos();if(c.options.plugins.legend.position!==p){c.options.plugins.legend.position=p;c.update("none");}}});
+const BUILD={overview(){new Chart(cDeliv,{type:"bar",data:{labels:yrs,datasets:[{label:"Model 3/Y",data:ANNUAL.map(r=>(r.model_3y_deliveries||0)/1e3),backgroundColor:RED},{label:"Other",data:ANNUAL.map(r=>r.other_deliveries/1e3),backgroundColor:G2}]},options:{plugins:{legend:{position:"bottom"}},scales:{x:{stacked:true,grid:{display:false}},y:{stacked:true,min:0,max:2000,ticks:{stepSize:500},grid}}}});
+new Chart(cMix,{type:"doughnut",data:{labels:["Model 3 / Y · "+share3y.toFixed(0)+"%","S / X / Cybertruck · "+(100-share3y).toFixed(0)+"%"],datasets:[{data:[last.model_3y_deliveries,last.other_deliveries],backgroundColor:[RED,G2],borderWidth:0}]},options:donutOpts()});
+new Chart(cRevMix,{type:"doughnut",data:{labels:["Automotive · $"+last.automotive_revenue_b.toFixed(2)+"B","Energy · $"+last.energy_revenue_b.toFixed(2)+"B","Services · $"+last.services_revenue_b.toFixed(2)+"B"],datasets:[{data:[last.automotive_revenue_b,last.energy_revenue_b,last.services_revenue_b],backgroundColor:[RED,INK,G2],borderWidth:0}]},options:donutOpts()});
+},volume(){new Chart(cQ,{type:"bar",data:{labels:QUARTERLY.map(q=>q.period.slice(2,4)+" "+q.period.slice(5)),datasets:[{label:"3/Y",data:QUARTERLY.map(q=>q.model_3y_deliveries/1e3),backgroundColor:RED},{label:"Other",data:QUARTERLY.map(q=>q.other_deliveries/1e3),backgroundColor:G2}]},options:{plugins:{legend:{position:"bottom"}},scales:{x:{stacked:true,grid:{display:false}},y:{stacked:true,min:0,max:600,ticks:{stepSize:100},grid}}}});
+let rows="<thead><tr><th>Year</th><th class=num>Deliveries</th><th class=num>YoY</th><th class=num>3/Y</th><th class=num>Other</th><th class=num>Production</th></tr></thead><tbody>";
+ANNUAL.forEach((r,i)=>{const yoy=i?((r.deliveries/ANNUAL[i-1].deliveries-1)*100):null;rows+=`<tr><td>${r.year}</td><td class=num>${r.deliveries.toLocaleString()}</td><td class=num>${yoy===null?"n/a":(yoy>0?"+":"")+yoy.toFixed(0)+"%"}</td><td class=num>${r.model_3y_deliveries==null?"n/a":r.model_3y_deliveries.toLocaleString()}</td><td class=num>${r.other_deliveries.toLocaleString()}</td><td class=num>${r.production.toLocaleString()}</td></tr>`});
+document.getElementById("tVol").innerHTML=rows+"</tbody>";
+},profitability(){new Chart(cMargin,{type:"line",data:{labels:yrs,datasets:[
+ {label:"Auto GM %",data:ANNUAL.map(r=>r.auto_gross_margin_pct),borderColor:RED,backgroundColor:RED,tension:0,pointRadius:4,borderWidth:2.5},
+ {label:"Op. margin %",data:ANNUAL.map(r=>r.operating_margin_pct),borderColor:INK,backgroundColor:INK,tension:0,pointRadius:4,borderWidth:2.5}]},
+ options:{plugins:{legend:{position:"bottom"},tooltip:{callbacks:{label:c=>c.dataset.label+": "+c.parsed.y.toFixed(1)+"%"}}},
+ scales:{x:{offset:true,grid:{display:false}},y:{min:-20,max:35,ticks:{stepSize:5,callback:v=>v+"%"},grid:{color:c=>c.tick.value===0?INK:"#EEEEEE",lineWidth:c=>c.tick.value===0?1.5:1,borderDash:c=>c.tick.value===0?[6,4]:[]}}}}});
+new Chart(cSeg,{type:"bar",data:{labels:yrs,datasets:[{label:"Automotive",data:ANNUAL.map(r=>r.automotive_revenue_b),backgroundColor:RED},{label:"Energy",data:ANNUAL.map(r=>r.energy_revenue_b),backgroundColor:INK},{label:"Services & other",data:ANNUAL.map(r=>r.services_revenue_b),backgroundColor:G2}]},options:{plugins:{legend:{position:"bottom"}},scales:{x:{stacked:true,grid:{display:false}},y:{stacked:true,min:0,max:100,ticks:{stepSize:25,callback:v=>"$"+v+"B"},grid}}}});
+},checks(){}};const built={};
+const fmtv=(v,n)=>n.includes("$B")?"$"+v.toFixed(2)+"B":v.toLocaleString();
+const nf=CHECKS.filter(c=>c.result!=="PASS").length;
+document.getElementById("ckSummary").innerHTML=`<strong>${CHECKS.length-nf} of ${CHECKS.length}</strong> checks pass.`;
+document.getElementById("tChecks").innerHTML="<thead><tr><th>Check</th><th class=num>Value</th><th class=num>Should equal</th><th>Result</th></tr></thead><tbody>"+CHECKS.map(c=>`<tr><td>${c.check}</td><td class=num>${fmtv(c.value,c.check)}</td><td class=num>${fmtv(c.should_equal,c.check)}</td><td class="${c.result==="PASS"?"pass":"fail"}">${c.result}</td></tr>`).join("")+"</tbody>";
+function show(t){if(!BUILD[t])t="overview";document.querySelectorAll("section").forEach(s=>s.classList.toggle("on",s.id==="tab-"+t));document.querySelectorAll("#tabs button").forEach(b=>b.classList.toggle("on",b.dataset.t===t));if(!built[t]){built[t]=1;BUILD[t]();}}
+document.querySelectorAll("#tabs button").forEach(b=>b.onclick=()=>{show(b.dataset.t);history.replaceState(null,"","#"+b.dataset.t)});
+show(location.hash?location.hash.slice(1):"overview");
+</script>
+</body>
+</html>
