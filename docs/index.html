@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Tesla · Scale, Mix &amp; Margin, 10-Year View</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<script src="data.js?v=20261029a"></script>
+<script src="company.js?v=20261029a"></script>
+<style>
+:root{--red:#E31937;--ink:#171A20;--g1:#5C5E62;--g2:#A2A3A5;--g3:#D0D1D2;--bg:#FFFFFF;--card:#FFFFFF;--line:#E6E6E6}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;font-family:"Inter","Segoe UI","Helvetica Neue",Arial,sans-serif;background:var(--bg);color:var(--ink);overflow-x:hidden}
+header{background:#fff;border-bottom:2px solid var(--red)}
+.hd,.wrap,footer{max-width:1160px;margin:0 auto;padding-left:24px;padding-right:24px}
+.hd{padding-top:24px;padding-bottom:18px;display:flex;justify-content:space-between;align-items:flex-end;gap:12px 24px;flex-wrap:wrap}
+.hd>div:first-child{min-width:0;flex:1 1 520px}
+.eyebrow{color:var(--red);font-size:11px;letter-spacing:.3em;font-weight:700;text-transform:uppercase}
+h1{margin:6px 0 6px;font-size:clamp(22px,3.2vw,30px);line-height:1.2}
+.sub{margin:0;color:var(--g1);font-size:13.5px;max-width:620px;line-height:1.5}
+.by{font-size:12px;color:var(--g1);white-space:nowrap}
+.wrap{padding-top:18px;padding-bottom:12px}
+.tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}
+.tabs button{border:1px solid var(--line);background:#fff;border-radius:999px;padding:9px 18px;font-size:13px;cursor:pointer;color:var(--ink);font-family:inherit}
+.tabs button.on{background:var(--red);border-color:var(--red);color:#fff}
+.grid{display:grid;gap:16px;margin-bottom:16px}
+.kpis{grid-template-columns:repeat(4,minmax(0,1fr))}
+.row{grid-template-columns:repeat(2,minmax(0,1fr))}
+.row3{grid-template-columns:repeat(3,minmax(0,1fr))}
+.card{background:var(--card);border:1px solid #E6E6E6;border-radius:14px;padding:18px 20px;box-shadow:0 1px 3px rgba(0,0,0,.06);min-width:0}
+.wrap>section>.card{margin-bottom:16px}
+.kpi .l{font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--g1);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.kpi .v{font-size:clamp(20px,2.4vw,26px);font-weight:700;color:var(--red);margin:6px 0 2px;white-space:nowrap}
+.kpi .s{font-size:12px;color:var(--g1)}
+h2{font-size:16px;margin:0 0 4px}.note{font-size:12.5px;color:var(--g1);margin:0 0 12px;line-height:1.45}
+.take h3{color:var(--red);font-size:14px;margin:0 0 6px}.take p{font-size:13px;line-height:1.55;margin:0}
+.cv{position:relative;width:100%;height:340px}.cv.md{height:300px}.cv.sm{height:240px}
+.cv canvas{position:absolute;inset:0;width:100%!important;height:100%!important}
+.tbl{width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch}
+table{width:100%;border-collapse:collapse;font-size:13px}th,td{text-align:left;padding:8px 6px;border-bottom:1px solid var(--line)}th{font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:var(--g1);white-space:nowrap}
+td.num,th.num{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+.gr .card{border-top:3px solid var(--red);display:flex;flex-direction:column}
+.gr .p{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--red);font-weight:800}
+.gr h3{font-size:18px;margin:4px 0 8px;line-height:1.25}
+.gr .sg{background:#F7F7F7;border-left:3px solid var(--red);padding:8px 10px;border-radius:0 6px 6px 0;font-size:13.5px;line-height:1.45;margin:0 0 10px}.gr .sg b{display:block;font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--red);margin-bottom:2px}
+.gr .ob{font-size:13.5px;line-height:1.5;margin:0 0 10px}
+.gr .rf{margin-top:auto;border-top:1px solid var(--line);padding-top:10px;font-size:12.5px;color:var(--g1)}.gr .rf b{color:var(--ink)}
+.gkf{font-size:13px;line-height:1.45;margin:10px 0 0;padding-top:8px;border-top:1px solid var(--line)}.gkf b{color:var(--red);font-size:11px;letter-spacing:.1em;text-transform:uppercase;margin-right:8px}
+td.b{font-weight:700}
+section{display:none}section.on{display:block}
+footer{padding-top:4px;padding-bottom:28px;font-size:11.5px;color:var(--g1);line-height:1.5}
+footer a{color:var(--g1)}footer p{margin:0 0 6px}.fsrc{padding-bottom:6px;border-bottom:1px solid var(--line);margin-bottom:8px!important}
+@media(max-width:900px){.row3{grid-template-columns:1fr}.kpis{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:700px){.row{grid-template-columns:1fr}.cv{height:280px}.cv.md{height:260px}.cv.sm{height:260px}}
+@media(max-width:480px){.hd,.wrap,footer{padding-left:16px;padding-right:16px}.grid{gap:12px}.card{padding:14px 14px}.kpi .v{font-size:20px}.kpi .l{white-space:normal;line-height:1.3}.by{white-space:normal}.tabs{gap:6px}.tabs button{padding:8px 12px;font-size:12.5px}table{font-size:11.5px}th,td{padding:7px 3px}th{letter-spacing:.02em;font-size:10px}.card.tc{padding:12px 10px}.tc table{font-size:11px}.tc th,.tc td{padding:7px 2px}}
+:root{--co-main:#E31937;--co-tint:#F7F7F7;--co-mut:#5C5E62;--co-ink:#171A20;--co-line:#E6E6E6}
+.co-top{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);gap:16px;margin-bottom:16px}.co-top>.card{margin:0}
+.co-row{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;margin-bottom:16px}.co-row>.card{margin:0}
+.co-bg{font-size:14.5px;line-height:1.5;margin:6px 0 14px}
+.co-facts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.co-facts>div{background:var(--co-tint);border-radius:10px;padding:10px 12px;min-width:0}
+.co-facts span{display:block;font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--co-mut);font-weight:700}
+.co-facts b{display:block;font-size:15px;margin-top:3px;line-height:1.3}
+.co-facts i{display:block;font-style:normal;font-size:11.5px;color:var(--co-mut);margin-top:2px}
+ol.co-tl{list-style:none;margin:8px 0 0;padding:0 0 0 2px;position:relative}
+ol.co-tl li{display:grid;grid-template-columns:58px minmax(0,1fr);gap:10px;align-items:baseline;padding:0 0 11px;position:relative}
+ol.co-tl li::before{content:"";position:absolute;left:47px;top:6px;width:8px;height:8px;border-radius:50%;background:var(--co-main)}
+ol.co-tl li::after{content:"";position:absolute;left:50.5px;top:16px;bottom:-2px;width:1px;background:var(--co-line)}
+ol.co-tl li:last-child::after{display:none}ol.co-tl li:last-child{padding-bottom:0}
+ol.co-tl span{font-weight:800;font-size:14px;color:var(--co-main)}
+ol.co-tl p{margin:0;font-size:13.5px;line-height:1.4;padding-left:6px}
+.co-two{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}.co-fin{grid-template-columns:minmax(0,1.3fr) minmax(0,1fr)}
+.co-two h4{margin:2px 0 6px;font-size:12px;letter-spacing:.05em;text-transform:uppercase;color:var(--co-mut)}
+.co-cv{position:relative;height:190px;width:100%}
+.co-cv canvas{position:absolute;inset:0;width:100%!important;height:100%!important}
+.co-sk{font-size:12.5px;color:var(--co-mut);margin:6px 0 0}.co-sk b{color:var(--co-ink)}.co-sk b.up{color:#1E7B34}.co-sk b.dn{color:#B4232F}
+.co-kf{font-size:13.5px;line-height:1.45;margin:12px 0 0;padding-top:10px;border-top:1px solid var(--co-line)}
+.co-kf b{display:inline-block;margin-right:8px;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--co-main)}
+.co-ev{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-top:6px}
+.co-ev>div{border-left:3px solid var(--co-main);background:var(--co-tint);border-radius:0 10px 10px 0;padding:10px 12px;min-width:0}
+.co-ev span{display:block;font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--co-mut);font-weight:700}
+.co-ev b{display:block;font-size:14.5px;margin:3px 0 3px;line-height:1.3}.co-ev p{margin:0;font-size:13px;line-height:1.45}
+#coRoot>.card{margin-bottom:12px}
+.co-h4{margin:2px 0 6px;font-size:12px;letter-spacing:.05em;text-transform:uppercase;color:var(--co-mut)}
+.co-src{font-size:11px;color:var(--co-mut);margin:0 0 14px;line-height:1.5}
+@media(max-width:900px){.co-top,.co-row{grid-template-columns:1fr}.co-ev{grid-template-columns:1fr}}
+@media(max-width:600px){.co-facts{grid-template-columns:repeat(2,minmax(0,1fr))}.co-two{grid-template-columns:1fr;gap:12px}.co-cv{height:170px}}
+@media(max-width:480px){.co-bg{font-size:14px}.co-facts b{font-size:14px}ol.co-tl li{grid-template-columns:50px minmax(0,1fr)}ol.co-tl li::before{left:40px}ol.co-tl li::after{left:43.5px}}
+</style>
+</head>
+<body>
+<header><div class="hd">
+  <div><div class="eyebrow">Tesla · Insights</div><h1>Scale, Mix &amp; Margin, 10-Year View</h1>
+  <p class="sub">How Model 3 and Model Y drove Tesla's volume and margins, 2016 to 2025.</p></div>
+</div></header>
+<div class="wrap">
+  <div class="tabs" id="tabs">
+    <button data-t="overview" class="on">Overview</button><button data-t="company">Company</button><button data-t="volume">Volume</button><button data-t="profitability">Profitability</button><button data-t="growth">Growth Opportunities</button>
+  </div>
+
+  <section id="tab-overview" class="on">
+    <div class="grid kpis" id="kpis"></div>
+    <div class="grid row">
+      <div class="card"><h2>Model 3 and Model Y Built the Volume</h2><p class="note">Annual deliveries (thousands)</p><div class="cv md"><canvas id="cDeliv"></canvas></div><p class="gkf" id="kfDeliv"></p></div>
+      <div class="card"><h2>Energy and Services Add to Automotive</h2><p class="note">2025 revenue mix ($B)</p><div class="cv md"><canvas id="cRevMix"></canvas></div><p class="gkf" id="kfMix"></p></div>
+    </div>
+  </section>
+
+  <section id="tab-company"><div id="coRoot"></div></section>
+
+  <section id="tab-volume">
+    <div class="grid kpis" id="kpisV"></div>
+    <div class="card"><h2>Deliveries Rose Each Quarter in 2026</h2><p class="note">Quarterly deliveries (thousands)</p><div class="cv"><canvas id="cQ"></canvas></div><p class="gkf" id="kfQ"></p></div>
+  </section>
+
+  <section id="tab-profitability">
+    <div class="grid kpis" id="kpisP"></div>
+    <div class="grid row">
+      <div class="card"><h2>Margins Since the Model 3 Ramp</h2><p class="note">Automotive gross margin and operating margin (%)</p><div class="cv md"><canvas id="cMargin"></canvas></div><p class="gkf" id="kfMargin"></p></div>
+      <div class="card"><h2>Energy and Services Grew Their Share</h2><p class="note">Revenue by segment ($B)</p><div class="cv md"><canvas id="cSeg"></canvas></div><p class="gkf" id="kfSeg"></p></div>
+    </div>
+  </section>
+
+  <section id="tab-growth">
+    <div class="grid row3 gr" id="grRecs"></div>
+    <div class="grid row">
+      <div class="card"><h2>Energy Revenue Grew Every Year, 2020 to 2025</h2><p class="note">Energy generation and storage revenue ($B)</p><div class="cv sm"><canvas id="cEnergy"></canvas></div><p class="gkf"><b>Key finding</b>Energy revenue rose from $2.0B in 2020 to $12.8B in 2025, and the order backlog reached a record in Q3 2026.</p></div>
+      <div class="card"><h2>FSD Subscriptions Are Climbing</h2><p class="note">Active FSD subscriptions (millions)</p><div class="cv sm"><canvas id="cFsd"></canvas></div><p class="gkf"><b>Key finding</b>Active subscriptions grew from 1.04M to 1.74M in a year, and services revenue rose 33% in Q3 2026.</p></div>
+    </div>
+    <div class="card"><h2>KPIs to Watch</h2><p class="note">Latest value and reference point</p><div class="tbl"><table id="tKpi"></table></div></div>
+  </section>
+</div>
+<footer><p class="fsrc">Sources: Tesla, GM and Ford Form 10-K filings (SEC); Tesla delivery releases, Q3 2026 Update and Form 10-Q; Yahoo Finance share prices to Oct 29, 2026.</p><p>Independent case study, not affiliated with Tesla.</p></footer>
+<script>
+const RED="#E31937", INK="#171A20", G1="#5C5E62", G2="#A2A3A5", G3="#D0D1D2";
+Chart.defaults.font.family='"Inter","Segoe UI","Helvetica Neue",Arial,sans-serif';Chart.defaults.color=G1;Chart.defaults.maintainAspectRatio=false;Chart.defaults.responsive=true;Chart.defaults.scale.ticks.maxRotation=0;Chart.defaults.scale.ticks.autoSkipPadding=6;
+const yrs=ANNUAL.map(r=>String(r.year)), last=ANNUAL[ANNUAL.length-1], prev=ANNUAL[ANNUAL.length-2];
+const pc=(a,b)=>{const v=(a/b-1)*100;return (v>=0?"+":"")+v.toFixed(1)+"% vs "};
+const pp=(a,b)=>{const v=a-b;return (v>=0?"up ":"down ")+Math.abs(v).toFixed(1)+" percentage points vs "};
+const kcard=k=>`<div class="card kpi"><div class="l">${k[0]}</div><div class="v">${k[1]}</div><div class="s">${k[2]}</div></div>`;
+const kf=(id,t)=>document.getElementById(id).innerHTML="<b>Key finding</b>"+t;
+const sh=r=>r.model_3y_deliveries/r.deliveries*100;
+document.getElementById("kpis").innerHTML=[
+ ["Deliveries, "+last.year,(last.deliveries/1e6).toFixed(2)+"M",pc(last.deliveries,prev.deliveries)+prev.year],
+ ["Revenue, "+last.year,"$"+last.total_revenue_b.toFixed(1)+"B",pc(last.total_revenue_b,prev.total_revenue_b)+prev.year],
+ ["Energy Revenue, "+last.year,"$"+last.energy_revenue_b.toFixed(1)+"B",pc(last.energy_revenue_b,prev.energy_revenue_b)+prev.year],
+ ["Model 3/Y Share, "+last.year,sh(last).toFixed(0)+"%",pp(sh(last),sh(prev))+prev.year]].map(kcard).join("");
+const Q=QUARTERLY, qL=Q[Q.length-1], qP=Q.find(q=>q.period===(+qL.period.slice(0,4)-1)+qL.period.slice(4));
+document.getElementById("kpisV").innerHTML=[
+ ["Deliveries, Q3 2026",qL.total_deliveries.toLocaleString(),pc(qL.total_deliveries,qP.total_deliveries)+"Q3 2025"],
+ ["Production, Q3 2026","464,391","+3.8% vs Q3 2025"],
+ ["Model 3/Y Share, Q3 2026",(qL.model_3y_deliveries/qL.total_deliveries*100).toFixed(0)+"%",pp(qL.model_3y_deliveries/qL.total_deliveries*100,qP.model_3y_deliveries/qP.total_deliveries*100)+"Q3 2025"],
+ ["Cumulative Deliveries","10.2M","8.5M at Q3 2025"]].map(kcard).join("");
+document.getElementById("kpisP").innerHTML=[
+ ["Gross Margin, Q3 2026","19.6%","up 1.6 percentage points vs Q3 2025"],
+ ["Gross Margin, "+last.year,last.total_gross_margin_pct.toFixed(1)+"%",pp(last.total_gross_margin_pct,prev.total_gross_margin_pct)+prev.year],
+ ["Automotive Gross Margin, "+last.year,last.auto_gross_margin_pct.toFixed(1)+"%",pp(last.auto_gross_margin_pct,prev.auto_gross_margin_pct)+prev.year],
+ ["Operating Margin, "+last.year,last.operating_margin_pct.toFixed(1)+"%",pp(last.operating_margin_pct,prev.operating_margin_pct)+prev.year]].map(kcard).join("");
+const peak=ANNUAL.reduce((a,b)=>b.deliveries>a.deliveries?b:a);
+kf("kfDeliv",`Deliveries grew from ${Math.round(ANNUAL[0].deliveries/1e3)}K in 2016 to a ${(peak.deliveries/1e6).toFixed(2)}M peak in ${peak.year}. Model 3 and Model Y were ${sh(last).toFixed(0)}% of ${last.year} deliveries.`);
+kf("kfMix",`Energy and services were ${((last.energy_revenue_b+last.services_revenue_b)/last.total_revenue_b*100).toFixed(0)}% of ${last.year} revenue, alongside $${last.automotive_revenue_b.toFixed(1)}B from automotive.`);
+const q26=Q.filter(q=>q.period.startsWith("2026"));
+kf("kfQ",`Deliveries rose from ${q26[0].total_deliveries.toLocaleString()} in Q1 2026 to ${qL.total_deliveries.toLocaleString()} in Q3 2026, with the largest vehicle backlog in four years.`);
+const opPeak=ANNUAL.reduce((a,b)=>b.operating_margin_pct>a.operating_margin_pct?b:a);
+kf("kfMargin",`Operating margin turned positive in 2020 and peaked at ${opPeak.operating_margin_pct.toFixed(1)}% in ${opPeak.year}. Gross margin improved to 19.6% in Q3 2026.`);
+const f0=ANNUAL[0];
+kf("kfSeg",`Energy and services grew from ${((f0.energy_revenue_b+f0.services_revenue_b)/f0.total_revenue_b*100).toFixed(0)}% of revenue in ${f0.year} to ${((last.energy_revenue_b+last.services_revenue_b)/last.total_revenue_b*100).toFixed(0)}% in ${last.year}.`);
+const grid={color:"#EEEEEE"};
+const legPos=()=>window.innerWidth<700?"bottom":"right";
+const donutOpts=()=>({cutout:"62%",layout:{padding:4},plugins:{legend:{position:legPos(),labels:{boxWidth:12,padding:12}}},onResize:(c)=>{const p=legPos();if(c.options.plugins.legend.position!==p){c.options.plugins.legend.position=p;c.update("none");}}});
+const BUILD={overview(){new Chart(cDeliv,{type:"bar",data:{labels:yrs,datasets:[{label:"Model 3/Y",data:ANNUAL.map(r=>(r.model_3y_deliveries||0)/1e3),backgroundColor:RED},{label:"Other models",data:ANNUAL.map(r=>r.other_deliveries/1e3),backgroundColor:G2}]},options:{plugins:{legend:{position:"bottom"}},scales:{x:{stacked:true,grid:{display:false}},y:{stacked:true,min:0,max:2000,ticks:{stepSize:500},grid}}}});
+new Chart(cRevMix,{type:"doughnut",data:{labels:["Automotive $"+last.automotive_revenue_b.toFixed(1)+"B","Energy $"+last.energy_revenue_b.toFixed(1)+"B","Services $"+last.services_revenue_b.toFixed(1)+"B"],datasets:[{data:[last.automotive_revenue_b,last.energy_revenue_b,last.services_revenue_b],backgroundColor:[RED,INK,G2],borderWidth:0}]},options:donutOpts()});
+},volume(){new Chart(cQ,{type:"bar",data:{labels:Q.map(q=>q.period.slice(5)+" "+q.period.slice(2,4)),datasets:[{label:"Model 3/Y",data:Q.map(q=>q.model_3y_deliveries/1e3),backgroundColor:Q.map(q=>q.period.startsWith("2026")?RED:"#E9A0AB")},{label:"Other models",data:Q.map(q=>q.other_deliveries/1e3),backgroundColor:G2}]},options:{plugins:{legend:{position:"bottom",labels:{generateLabels:c=>[{text:"Model 3/Y",fillStyle:RED,strokeStyle:RED,lineWidth:0},{text:"Other models",fillStyle:G2,strokeStyle:G2,lineWidth:0}]}}},scales:{x:{stacked:true,grid:{display:false},ticks:{autoSkip:true,maxTicksLimit:window.innerWidth<480?8:15}},y:{stacked:true,min:0,max:600,ticks:{stepSize:100},grid}}}});
+},profitability(){new Chart(cMargin,{type:"line",data:{labels:yrs,datasets:[
+ {label:"Automotive gross margin",data:ANNUAL.map(r=>r.auto_gross_margin_pct),borderColor:RED,backgroundColor:RED,tension:0,pointRadius:3,borderWidth:2.5},
+ {label:"Operating margin",data:ANNUAL.map(r=>r.operating_margin_pct),borderColor:INK,backgroundColor:INK,tension:0,pointRadius:3,borderWidth:2.5}]},
+ options:{plugins:{legend:{position:"bottom"},tooltip:{callbacks:{label:c=>c.dataset.label+": "+c.parsed.y.toFixed(1)+"%"}}},
+ scales:{x:{offset:true,grid:{display:false}},y:{min:-20,max:35,ticks:{stepSize:10,callback:v=>v+"%"},grid:{color:c=>c.tick.value===0?INK:"#EEEEEE"}}}}});
+new Chart(cSeg,{type:"bar",data:{labels:yrs,datasets:[{label:"Automotive",data:ANNUAL.map(r=>r.automotive_revenue_b),backgroundColor:RED},{label:"Energy",data:ANNUAL.map(r=>r.energy_revenue_b),backgroundColor:INK},{label:"Services and other",data:ANNUAL.map(r=>r.services_revenue_b),backgroundColor:G2}]},options:{plugins:{legend:{position:"bottom"}},scales:{x:{stacked:true,grid:{display:false}},y:{stacked:true,min:0,max:100,ticks:{stepSize:25,callback:v=>"$"+v+"B"},grid}}}});
+},company(){CO_BUILD();CO_RENDER();},growth(){buildGrowth();}};const built={};
+function buildGrowth(){
+const OPS=[
+ {tag:"Energy Storage",act:"Storage Capacity to Meet Record Demand",sig:"Energy storage order backlog at a record in Q3 2026; 13.7 GWh deployed in the quarter",ob:"Megafactory Texas (planned 50 GWh) and U.S. built LFP cells could help serve data center and grid demand faster.",ref:"Energy revenue $12.8B in 2025, vs $2.0B in 2020"},
+ {tag:"Software and Services",act:"Recurring Revenue from FSD",sig:"1.74M active FSD subscriptions in Q3 2026, up from 1.04M a year earlier",ob:"Subscriptions add recurring revenue on vehicles already on the road, with little added factory cost.",ref:"Services and other revenue $4.61B in Q3 2026, up 33%"},
+ {tag:"Factory Utilization",act:"Battery Supply to Fill Factory Capacity",sig:"Battery availability was the limiting factor in Q3 2026, with the largest vehicle backlog in four years",ob:"Running factories closer to capacity would spread fixed costs over more vehicles.",ref:"Operating margin 4.6% in 2025, vs 16.8% in 2022"}];
+document.getElementById("grRecs").innerHTML=OPS.map(o=>`<div class="card"><div class="p">${o.tag}</div><h3>${o.act}</h3><p class="sg"><b>KPI Signal</b>${o.sig}</p><p class="ob">${o.ob}</p><div class="rf"><b>Reference Point:</b> ${o.ref}</div></div>`).join("");
+const lblP={id:"glbl",afterDatasetsDraw(ch){const c=ch.ctx,f=ch.config.options.gFmt;c.save();c.font="700 11.5px "+Chart.defaults.font.family;c.fillStyle=INK;c.textAlign="center";c.textBaseline="bottom";ch.getDatasetMeta(0).data.forEach((el,j)=>c.fillText(f(ch.data.datasets[0].data[j]),el.x,el.y-4));c.restore();}};
+const EY=ANNUAL.filter(r=>r.year>=2020);
+new Chart(cEnergy,{type:"bar",plugins:[lblP],data:{labels:EY.map(r=>String(r.year)),datasets:[{data:EY.map(r=>r.energy_revenue_b),backgroundColor:EY.map((r,i)=>i===EY.length-1?RED:G2),borderRadius:4,barPercentage:.6}]},options:{gFmt:v=>"$"+v.toFixed(1)+"B",layout:{padding:{top:18}},plugins:{legend:{display:false}},scales:{x:{grid:{display:false}},y:{display:false,min:0,max:15}}}});
+const FQ=["Q3 2025","Q4 2025","Q1 2026","Q2 2026","Q3 2026"],FV=[1.04,1.10,1.28,1.48,1.74];
+new Chart(cFsd,{type:"bar",plugins:[lblP],data:{labels:FQ,datasets:[{data:FV,backgroundColor:FV.map((v,i)=>i===FV.length-1?RED:G2),borderRadius:4,barPercentage:.6}]},options:{gFmt:v=>v.toFixed(2)+"M",layout:{padding:{top:18}},plugins:{legend:{display:false}},scales:{x:{grid:{display:false},ticks:{autoSkip:false,font:{size:window.innerWidth<480?10:12}}},y:{display:false,min:0,max:2}}}});
+const rows=[["Energy storage deployed, Q3 2026","13.7 GWh","12.5 GWh in Q3 2025"],["Active FSD subscriptions, Q3 2026","1.74M","1.04M in Q3 2025"],["Services and other revenue, Q3 2026","$4.61B","$3.48B in Q3 2025"],["Vehicle production, Q3 2026","464,391","447,450 in Q3 2025"],["Operating margin, 2025","4.6%","16.8% in 2022"]];
+document.getElementById("tKpi").innerHTML="<thead><tr><th>KPI</th><th class=num>Latest</th><th class=num>Reference point</th></tr></thead><tbody>"+rows.map(r=>`<tr><td>${r[0]}</td><td class="num b">${r[1]}</td><td class=num>${r[2]}</td></tr>`).join("")+"</tbody>";
+}
+function show(t){if(!BUILD[t])t="overview";document.querySelectorAll("section").forEach(s=>s.classList.toggle("on",s.id==="tab-"+t));document.querySelectorAll("#tabs button").forEach(b=>b.classList.toggle("on",b.dataset.t===t));if(!built[t]){built[t]=1;BUILD[t]();}}
+document.querySelectorAll("#tabs button").forEach(b=>b.onclick=()=>{show(b.dataset.t);history.replaceState(null,"","#"+b.dataset.t)});
+show(location.hash?location.hash.slice(1):"overview");
+</script>
+</body>
+</html>
